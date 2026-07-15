@@ -21,49 +21,49 @@ In your root component (e.g., App.tsx), wrap your application with the provider:
 
 tsx
 
-import { StickerProvider } from 'react-native-en-custom-sticker';
-export default function App() {
-  return (
-    <StickerProvider>
-      <YourMainApp />
-    </StickerProvider>
-  );
-}
+#import { StickerProvider } from 'react-native-en-custom-sticker';
+#export default function App() {
+#  return (
+#    <StickerProvider>
+#      <YourMainApp />
+#   </StickerProvider>
+#  );
+#}
 2. Open the Sticker Maker
 Use the useStickerMaker hook anywhere inside your app to open the sticker creation flow.
 
 tsx
 
-import React from 'react';
-import { View, Button } from 'react-native';
-import { useStickerMaker } from 'react-native-en-custom-sticker';
-export const ChatScreen = () => {
-  const { openStickerPopup } = useStickerMaker();
-  const handleOpenSticker = () => {
-    openStickerPopup({
-      actionMenu: {
-        titleText: 'Create Custom Sticker',
-        primaryColor: '#007AFF',
-      },
-      editor: {
-        recipientName: 'Ali Raza', // Shown in the bottom bar
-      },
-      actions: {
-        onSendSticker: (finalUri) => {
-          console.log('Send this sticker in chat:', finalUri);
-        },
-        onFavoriteSticker: (finalUri) => {
-          console.log('Save to favorites:', finalUri);
-        },
-      }
-    });
-  };
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Button title="Make a Sticker" onPress={handleOpenSticker} />
-    </View>
-  );
-};
+#import React from 'react';
+#import { View, Button } from 'react-native';
+#import { useStickerMaker } from 'react-native-en-custom-sticker';
+#export const ChatScreen = () => {
+#  const { openStickerPopup } = useStickerMaker();
+#  const handleOpenSticker = () => {
+#    openStickerPopup({
+#      actionMenu: {
+#        titleText: 'Create Custom Sticker',
+#        primaryColor: '#007AFF',
+#      },
+#      editor: {
+#        recipientName: 'Ali Raza', // Shown in the bottom bar
+#      },
+#      actions: {
+#        onSendSticker: (finalUri) => {
+#          console.log('Send this sticker in chat:', finalUri);
+#       },
+#        onFavoriteSticker: (finalUri) => {
+#          console.log('Save to favorites:', finalUri);
+#        },
+#      }
+#    });
+#  };
+#  return (
+#    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+#      <Button title="Make a Sticker" onPress={handleOpenSticker} />
+#    </View>
+#  );
+#};
 
 📖 API Reference
 openStickerPopup(options?: StickerMakerOptions)
