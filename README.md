@@ -1,9 +1,3 @@
-Bhai, GitHub ki `README.md` file Markdown formatting samajhti hai. Agar aap direct plain text wahan copy-paste karenge toh woh sab kuch aik hi line mein mix kar dega aur code ke andar lagay gaye tags (jaise `#`) wahan bilkul ajeeb lagte hain.
-
-Maine aapke text ko properly GitHub Markdown (headings, tables, aur code blocks) ke hisaab se format kar diya hai. Aap is neechay diye gaye poore block ko copy kar ke seedha apni `README.md` file mein paste kar dein, GitHub par yeh bilkul professional aur khubsoorat nazar aayega:
-
----
-
 # React Native EN Custom Sticker 🎨
 
 A highly customizable, native-backed sticker creation library for React Native. This library allows users to select an image, automatically removes the background using Google ML Kit (Native Android), and provides a fully featured UI to preview, add text, and save the generated stickers.
@@ -163,7 +157,3 @@ Listen to user interactions.
 ## 📄 License
 
 MIT
-
----
-
-Bhai, aapke original text mein jo code ke start par ajeeb se tags (jaise `#` aur `<`) ban gaye thay, woh maine theek kar diye hain. Ab aap ise paste karke dekhein, GitHub isay bilkul perfect layout mein render karega!
