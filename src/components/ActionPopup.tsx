@@ -83,13 +83,15 @@ export const ActionPopup: React.FC<ActionPopupProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="fade"
+      animationType="slide"
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={localStyles.overlay}>
           <TouchableWithoutFeedback>
-            <View style={localStyles.dialogContainer}>
+            <View style={localStyles.bottomSheetContainer}>
+              <View style={localStyles.dragIndicator} />
+              
               <Text style={[localStyles.titleText, { color: titleColorVal }]}>
                 {titleTextStr}
               </Text>
@@ -106,33 +108,41 @@ export const ActionPopup: React.FC<ActionPopupProps> = ({
 const localStyles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'flex-end',
   },
-  dialogContainer: {
+  bottomSheetContainer: {
     width: '100%',
-    maxWidth: 340,
     backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 20,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 36, // Extra padding for safe area
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.1,
     shadowRadius: 12,
-    elevation: 8,
+    elevation: 20,
+  },
+  dragIndicator: {
+    width: 40,
+    height: 5,
+    backgroundColor: '#DDDDDD',
+    borderRadius: 3,
+    alignSelf: 'center',
+    marginBottom: 16,
   },
   titleText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '700',
     color: '#333',
     textAlign: 'center',
     marginBottom: 20,
   },
   button: {
-    paddingVertical: 14,
-    borderRadius: 10,
+    paddingVertical: 16,
+    borderRadius: 14,
     alignItems: 'center',
     marginBottom: 12,
   },

@@ -55,9 +55,9 @@ function AppContent() {
           openStickerPopup({
             actionMenu: {
               labels: {
-                title: 'Create Chain Sticker',
-                camera: 'Snap a Photo',
-                gallery: 'Choose from Camera Roll',
+                title: 'Create Sticker',
+                camera: 'Capture Photo',
+                gallery: 'Choose From Gallery',
                 cancel: 'Cancel',
               },
               theme: {
@@ -68,7 +68,7 @@ function AppContent() {
               sequence: ['camera', 'gallery', 'cancel'],
             },
             loader: {
-              loadingText: 'Generating Masterpiece...',
+              loadingText: 'Generating Sticker...',
               theme: {
                 spinnerColor: '#FFD700',
                 overlayColor: 'rgba(0, 0, 0, 0.8)',
@@ -79,7 +79,7 @@ function AppContent() {
               theme: {
                 backgroundColor: 'rgba(46, 54, 45, 0.23)',
                 bottomBarColor: 'rgba(41, 87, 130, 0.38)',
-                headerIconColor: '#F39C12',
+                headerIconColor: '#0b0b0bff',
                 favoriteIconColor: '#E74C3C',
                 sendButtonColor: '#27AE60',
                 thumbnailBorderColor: '#9B59B6',
