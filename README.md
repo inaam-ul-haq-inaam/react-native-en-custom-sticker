@@ -1,36 +1,29 @@
-# React Native EN Custom Sticker 🎨
+# 🎨 React Native EN Custom Sticker
 
-A highly customizable, native-backed sticker creation library for React Native. This library allows users to select an image, automatically removes the background using Google ML Kit (Native Android), and provides a fully featured UI to preview, add text, and save the generated stickers.
+A highly customizable, native-backed sticker creation library for React Native. This library allows users to select an image, automatically removes the background using **Google ML Kit** (Native Android), and provides a fully featured UI to preview, add text, and save the generated stickers.
+
+---
 
 ## 🚀 Installation
 
 ```sh
 npm install react-native-en-custom-sticker
-
-```
-
-*OR*
-
-```sh
+# OR
 yarn add react-native-en-custom-sticker
-
 ```
 
 ### Peer Dependencies
-
 This library relies on several peer dependencies for UI and image processing. Make sure to install them in your project:
-
 ```sh
 npm install react-native-vector-icons react-native-view-shot react-native-fast-image react-native-linear-gradient react-native-gesture-handler
-
 ```
+*Note: Make sure to link `react-native-vector-icons` properly for Android/iOS.*
 
-> **Note:** Make sure to link `react-native-vector-icons` properly for Android/iOS.
+---
 
-## 🛠 Basic Usage
+## 🛠️ Basic Usage
 
-### 1. Wrap your app with StickerProvider
-
+### 1. Wrap your app with `StickerProvider`
 In your root component (e.g., `App.tsx`), wrap your application with the provider:
 
 ```tsx
@@ -39,16 +32,14 @@ import { StickerProvider } from 'react-native-en-custom-sticker';
 export default function App() {
   return (
     <StickerProvider>
-       {/* Your app components go here */}
+      <YourMainApp />
     </StickerProvider>
   );
 }
-
 ```
 
 ### 2. Open the Sticker Maker
-
-Use the `useStickerMaker` hook anywhere inside your app to open the sticker creation flow.
+Use the `useStickerMaker` hook anywhere inside your app to open the sticker creation flow. We use a **Pure TypeScript** configuration object so you get full autocomplete in your IDE!
 
 ```tsx
 import React from 'react';
@@ -61,18 +52,24 @@ export const ChatScreen = () => {
   const handleOpenSticker = () => {
     openStickerPopup({
       actionMenu: {
-        titleText: 'Create Custom Sticker',
-        primaryColor: '#007AFF',
+        labels: {
+          title: 'Create Custom Sticker',
+        },
+        theme: {
+          primaryColor: '#007AFF',
+        },
       },
       editor: {
-        recipientName: 'Ali Raza', // Shown in the bottom bar
+        recipientName: 'Ali Raza', 
       },
       actions: {
-        onSendSticker: (finalUri) => {
-          console.log('Send this sticker in chat:', finalUri);
+        onMediaAction: (action) => {
+          if (action === 'camera') console.log('Open Camera');
+          if (action === 'gallery') console.log('Open Gallery');
         },
-        onFavoriteSticker: (finalUri) => {
-          console.log('Save to favorites:', finalUri);
+        onStickerAction: (action, uri) => {
+          if (action === 'send') console.log('Send this sticker:', uri);
+          if (action === 'favorite') console.log('Save to favorites:', uri);
         },
       }
     });
@@ -80,80 +77,60 @@ export const ChatScreen = () => {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-       <Button title="Open Sticker Maker" onPress={handleOpenSticker} />
+      <Button title="Make a Sticker" onPress={handleOpenSticker} />
     </View>
   );
 };
-
 ```
+
+---
 
 ## 📖 API Reference
 
 ### `openStickerPopup(options?: StickerMakerOptions)`
+Calling this method opens the bottom sheet menu to start the sticker creation process. 
 
-Calling this method opens the bottom sheet menu to start the sticker creation process.
-
-### `StickerMakerOptions`
-
-This is a nested configuration object that gives you full control over the plugin's UI and behavior.
+#### `StickerMakerOptions`
+This is a nested configuration object that gives you full control over the plugin's UI and behavior. Thanks to strict typings, your IDE will auto-suggest all these properties!
 
 | Property | Type | Description |
-| --- | --- | --- |
-| `actionMenu` | `ActionMenuConfig` | Styles for the first bottom sheet (Camera/Gallery selection). |
+|----------|------|-------------|
+| `actionMenu` | `ActionMenuConfig` | Styles and text for the initial Camera/Gallery popup. |
 | `loader` | `LoaderConfig` | Styles for the loading screen (shown during ML Kit processing). |
 | `editor` | `EditorConfig` | Styles for the final sticker editor/preview screen. |
-| `actions` | `StickerMakerActions` | Callbacks triggered by user actions. |
+| `actions` | `StickerMakerActions` | Event callbacks triggered by user actions. |
 
-### Configurations Breakdown
+---
 
-#### `ActionMenuConfig`
+### 🎨 Theming & Configuration Breakdown
 
+#### 1. `ActionMenuConfig`
 Controls the Camera/Gallery selection popup.
+* `labels` (Object) - Override default texts: `{ title, camera, gallery, cancel }`
+* `theme` (Object) - Override colors: `{ titleColor, primaryColor, textColor }`
+* `sequence` (Array) - Order of buttons. Default: `['camera', 'gallery', 'cancel']`
 
-* **`titleText`** *(string)* - Default: `"Create Chain Sticker"`
-* **`titleColor`** *(string)*
-* **`cameraText`** *(string)*
-* **`galleryText`** *(string)*
-* **`cancelText`** *(string)*
-* **`primaryColor`** *(string)* - Default: `"#0ea5e9"`
-* **`textColor`** *(string)*
-* **`sequence`** *(Array)* - Default: `['camera', 'gallery', 'cancel']`
-
-#### `LoaderConfig`
-
+#### 2. `LoaderConfig`
 Controls the loading screen shown while the AI removes the background.
+* `loadingText` (string) - Text to show while processing.
+* `theme` (Object) - Override colors: `{ spinnerColor, overlayColor }`
 
-* **`loadingText`** *(string)* - Default: `"Generating Chain..."`
-* **`spinnerColor`** *(string)* - Default: `"#0ea5e9"`
-* **`overlayColor`** *(string)* - Default: `"rgba(0, 0, 0, 0.6)"`
-
-#### `EditorConfig`
-
+#### 3. `EditorConfig`
 Controls the final sticker preview screen where the user can add text.
+* `recipientName` (string) - Displays a name between the Favorite and Send buttons.
+* `theme` (Object) - Override UI colors: `{ backgroundColor, bottomBarColor, headerIconColor, favoriteIconColor, sendButtonColor, thumbnailBorderColor }`
 
-* **`recipientName`** *(string)* - Displays a name between the Favorite and Send buttons.
-* **`backgroundColor`** *(string)*
-* **`bottomBarColor`** *(string)*
-* **`headerIconColor`** *(string)*
-* **`favoriteIconColor`** *(string)*
-* **`sendButtonColor`** *(string)*
-* **`thumbnailBorderColor`** *(string)*
+#### 4. `StickerMakerActions` (Events)
+A clean, single-prop event dispatcher for handling user actions.
+* `onMediaAction(action: 'camera' | 'gallery')` - Fired when the user selects a media source. You should open the camera or gallery in your app logic here.
+* `onStickerAction(action: 'send' | 'favorite', uri: string)` - Fired from the editor. `uri` contains the final flattened sticker image path.
 
-#### `StickerMakerActions` (Callbacks)
-
-Listen to user interactions.
-
-* **`onCameraSelect()`** - Triggered when camera is selected. (Library handles camera launch automatically if implemented, or fires this).
-* **`onGallerySelect()`** - Triggered when gallery is selected.
-* **`onFavoriteSticker(uri: string)`** - Triggered when the user hits Send and the favorite (heart) icon was active.
-* **`onSendSticker(uri: string)`** - Triggered when the user hits Send. Provides the final flattened image URI.
+---
 
 ## 🏗 Architecture & Features
-
 * **Google ML Kit Subject Segmentation:** Native Android integration ensures fast, offline, and accurate background removal.
 * **React Native View Shot:** Automatically captures any text overlays added by the user onto the transparent sticker.
-* **Declarative API:** The nested configuration pattern (`actionMenu`, `loader`, `editor`, `actions`) makes it extremely easy to re-brand the sticker plugin for any host app.
+* **Professional API Design:** Grouped `theme` and `labels` objects with single-prop event dispatchers (`onMediaAction`, `onStickerAction`) provide a clean, scalable, and standard React Native developer experience.
 
 ## 📄 License
-
 MIT

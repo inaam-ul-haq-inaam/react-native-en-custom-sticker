@@ -1,97 +1,153 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native EN Custom Sticker 🎨
 
-# Getting Started
+A highly customizable, native-backed sticker creation library for React Native. This library allows users to select an image, automatically removes the background using Google ML Kit (Native Android), and provides a fully featured UI to preview, add text, and save the generated stickers.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
-
-## Step 1: Start Metro
-
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
-
-To start the Metro dev server, run the following command from the root of your React Native project:
+## 🚀 Installation
 
 ```sh
-# Using npm
-npm start
+npm install react-native-en-custom-sticker
 
-# OR using Yarn
-yarn start
 ```
 
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+_OR_
 
 ```sh
-# Using npm
-npm run android
+yarn add react-native-en-custom-sticker
 
-# OR using Yarn
-yarn android
 ```
 
-### iOS
+### Peer Dependencies
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+This library relies on several peer dependencies for UI and image processing. Make sure to install them in your project:
 
 ```sh
-bundle install
+npm install react-native-vector-icons react-native-view-shot react-native-fast-image react-native-linear-gradient react-native-gesture-handler
+
 ```
 
-Then, and every time you update your native dependencies, run:
+> **Note:** Make sure to link `react-native-vector-icons` properly for Android/iOS.
 
-```sh
-bundle exec pod install
+## 🛠 Basic Usage
+
+### 1. Wrap your app with StickerProvider
+
+In your root component (e.g., `App.tsx`), wrap your application with the provider:
+
+```tsx
+import { StickerProvider } from 'react-native-en-custom-sticker';
+
+export default function App() {
+  return <StickerProvider>{/* Your app components go here */}</StickerProvider>;
+}
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+### 2. Open the Sticker Maker
 
-```sh
-# Using npm
-npm run ios
+Use the `useStickerMaker` hook anywhere inside your app to open the sticker creation flow.
 
-# OR using Yarn
-yarn ios
+```tsx
+import React from 'react';
+import { View, Button } from 'react-native';
+import { useStickerMaker } from 'react-native-en-custom-sticker';
+
+export const ChatScreen = () => {
+  const { openStickerPopup } = useStickerMaker();
+
+  const handleOpenSticker = () => {
+    openStickerPopup({
+      actionMenu: {
+        titleText: 'Create Custom Sticker',
+        primaryColor: '#007AFF',
+      },
+      editor: {
+        recipientName: 'Ali Raza', // Shown in the bottom bar
+      },
+      actions: {
+        onSendSticker: (finalUri) => {
+          console.log('Send this sticker in chat:', finalUri);
+        },
+        onFavoriteSticker: (finalUri) => {
+          console.log('Save to favorites:', finalUri);
+        },
+      },
+    });
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Button title="Open Sticker Maker" onPress={handleOpenSticker} />
+    </View>
+  );
+};
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 📖 API Reference
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+### `openStickerPopup(options?: StickerMakerOptions)`
 
-## Step 3: Modify your app
+Calling this method opens the bottom sheet menu to start the sticker creation process.
 
-Now that you have successfully run the app, let's make changes!
+### `StickerMakerOptions`
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+This is a nested configuration object that gives you full control over the plugin's UI and behavior.
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+| Property     | Type                  | Description                                                     |
+| ------------ | --------------------- | --------------------------------------------------------------- |
+| `actionMenu` | `ActionMenuConfig`    | Styles for the first bottom sheet (Camera/Gallery selection).   |
+| `loader`     | `LoaderConfig`        | Styles for the loading screen (shown during ML Kit processing). |
+| `editor`     | `EditorConfig`        | Styles for the final sticker editor/preview screen.             |
+| `actions`    | `StickerMakerActions` | Callbacks triggered by user actions.                            |
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+### Configurations Breakdown
 
-## Congratulations! :tada:
+#### `ActionMenuConfig`
 
-You've successfully run and modified your React Native App. :partying_face:
+Controls the Camera/Gallery selection popup.
 
-### Now what?
+- **`titleText`** _(string)_ - Default: `"Create Chain Sticker"`
+- **`titleColor`** _(string)_
+- **`cameraText`** _(string)_
+- **`galleryText`** _(string)_
+- **`cancelText`** _(string)_
+- **`primaryColor`** _(string)_ - Default: `"#0ea5e9"`
+- **`textColor`** _(string)_
+- **`sequence`** _(Array)_ - Default: `['camera', 'gallery', 'cancel']`
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+#### `LoaderConfig`
 
-# Troubleshooting
+Controls the loading screen shown while the AI removes the background.
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- **`loadingText`** _(string)_ - Default: `"Generating Chain..."`
+- **`spinnerColor`** _(string)_ - Default: `"#0ea5e9"`
+- **`overlayColor`** _(string)_ - Default: `"rgba(0, 0, 0, 0.6)"`
 
-# Learn More
+#### `EditorConfig`
 
-To learn more about React Native, take a look at the following resources:
+Controls the final sticker preview screen where the user can add text.
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- **`recipientName`** _(string)_ - Displays a name between the Favorite and Send buttons.
+- **`backgroundColor`** _(string)_
+- **`bottomBarColor`** _(string)_
+- **`headerIconColor`** _(string)_
+- **`favoriteIconColor`** _(string)_
+- **`sendButtonColor`** _(string)_
+- **`thumbnailBorderColor`** _(string)_
+
+#### `StickerMakerActions` (Callbacks)
+
+Listen to user interactions.
+
+- **`onCameraSelect()`** - Triggered when camera is selected. (Library handles camera launch automatically if implemented, or fires this).
+- **`onGallerySelect()`** - Triggered when gallery is selected.
+- **`onFavoriteSticker(uri: string)`** - Triggered when the user hits Send and the favorite (heart) icon was active.
+- **`onSendSticker(uri: string)`** - Triggered when the user hits Send. Provides the final flattened image URI.
+
+## 🏗 Architecture & Features
+
+- **Google ML Kit Subject Segmentation:** Native Android integration ensures fast, offline, and accurate background removal.
+- **React Native View Shot:** Automatically captures any text overlays added by the user onto the transparent sticker.
+- **Declarative API:** The nested configuration pattern (`actionMenu`, `loader`, `editor`, `actions`) makes it extremely easy to re-brand the sticker plugin for any host app.
+
+## 📄 License
+
+MIT
