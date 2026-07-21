@@ -11,23 +11,31 @@ export interface StickerData {
 export interface ActionMenuConfig {
   labels?: {
     title?: string;
+    subtitle?: string;
     camera?: string;
+    cameraSubtitle?: string;
     gallery?: string;
+    gallerySubtitle?: string;
     cancel?: string;
   };
   theme?: {
     titleColor?: string;
     primaryColor?: string;
     textColor?: string;
+    backgroundColor?: string;
+    overlayColor?: string;
   };
   sequence?: ('camera' | 'gallery' | 'cancel')[];
 }
 
 export interface LoaderConfig {
   loadingText?: string;
+  loadingSubtitle?: string;
   theme?: {
     spinnerColor?: string;
     overlayColor?: string;
+    backgroundColor?: string;
+    textColor?: string;
   };
 }
 
@@ -40,6 +48,24 @@ export interface EditorConfig {
     favoriteIconColor?: string;
     sendButtonColor?: string;
     thumbnailBorderColor?: string;
+  };
+  icons?: {
+    close?: string;
+    text?: string;
+    favorite?: string;
+    favoriteActive?: string;
+    send?: string;
+  };
+  textEditor?: {
+    labels?: {
+      done?: string;
+      placeholder?: string;
+    };
+    theme?: {
+      overlayColor?: string;
+      doneColor?: string;
+      iconColor?: string;
+    };
   };
 }
 

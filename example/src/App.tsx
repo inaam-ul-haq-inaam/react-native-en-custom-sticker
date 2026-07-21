@@ -46,43 +46,60 @@ function AppContent() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sticker Maker Example</Text>
+      <Text style={styles.title}>Sticker Maker App</Text>
 
       <Button
         title="Open Custom Sticker Menu"
-        color="green"
+        color='rgba(67, 105, 135, 1)'
         onPress={() =>
           openStickerPopup({
             actionMenu: {
               labels: {
                 title: 'Create Sticker',
-                camera: 'Capture Photo',
-                gallery: 'Choose From Gallery',
+                subtitle: 'Add a photo to create your sticker',
+                camera: 'Camera',
+                cameraSubtitle: 'Take a new photo',
+                gallery: 'Gallery',
+                gallerySubtitle: 'Choose from gallery',
                 cancel: 'Cancel',
               },
               theme: {
-                titleColor: 'black',
-                primaryColor: 'black',
+                titleColor: 'white',
                 textColor: 'white',
+                backgroundColor: '#0f172a',
+                overlayColor: 'rgba(0, 0, 0, 0.06)',
               },
               sequence: ['camera', 'gallery', 'cancel'],
             },
             loader: {
               loadingText: 'Generating Sticker...',
+              loadingSubtitle: 'Please wait .......',
               theme: {
-                spinnerColor: '#FFD700',
-                overlayColor: 'rgba(0, 0, 0, 0.8)',
+                spinnerColor: '#60a5fa',
+                backgroundColor: '#1e293b',
+                textColor: 'white',
               },
             },
             editor: {
-              recipientName: 'Ali Raza',
+              recipientName: 'inaam ul haq',
               theme: {
-                backgroundColor: 'rgba(46, 54, 45, 0.23)',
-                bottomBarColor: 'rgba(41, 87, 130, 0.38)',
+                backgroundColor: 'rgba(37, 79, 142, 0.12)',
+                bottomBarColor: 'rgba(32, 67, 99, 0.38)',
                 headerIconColor: '#0b0b0bff',
                 favoriteIconColor: '#E74C3C',
-                sendButtonColor: '#27AE60',
-                thumbnailBorderColor: '#9B59B6',
+                sendButtonColor: '#3766b6ff',
+                thumbnailBorderColor: '#446387ff',
+              },
+              textEditor: {
+                labels: {
+                  done: 'Done',
+                  placeholder: 'Type your text...',
+                },
+                theme: {
+                  overlayColor: 'rgba(0, 0, 0, 0.64)',
+                  doneColor: '#e2e5ebff',
+                  iconColor: '#FFFFFF',
+                },
               },
             },
             actions: {

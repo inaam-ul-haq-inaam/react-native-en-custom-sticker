@@ -7,6 +7,8 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
+import LinearGradient from 'react-native-linear-gradient';
 import type { ActionMenuConfig, StickerMakerActions } from '../types/types';
 
 interface ActionPopupProps {
@@ -22,23 +24,28 @@ export const ActionPopup: React.FC<ActionPopupProps> = ({
   actionMenu,
   actions,
 }) => {
-  const primaryColor = actionMenu?.theme?.primaryColor || 'black';
   const textColor = actionMenu?.theme?.textColor || 'white';
-  const titleColorVal = actionMenu?.theme?.titleColor || '#333';
+  const titleColorVal = actionMenu?.theme?.titleColor || '#ffffff';
+  const backgroundColor = actionMenu?.theme?.backgroundColor || '#0f172a';
+  const overlayColor = actionMenu?.theme?.overlayColor || 'rgba(0, 0, 0, 0.6)';
+
+  const titleTextStr = actionMenu?.labels?.title || 'Create Sticker';
+  const subtitleTextStr = actionMenu?.labels?.subtitle || 'Add a photo to create your sticker';
   
-  const cameraText = actionMenu?.labels?.camera || 'Take a Photo';
-  const galleryText = actionMenu?.labels?.gallery || 'Choose from Gallery';
+  const cameraText = actionMenu?.labels?.camera || 'Camera';
+  const cameraSubtitleText = actionMenu?.labels?.cameraSubtitle || 'Take a new photo';
+  
+  const galleryText = actionMenu?.labels?.gallery || 'Gallery';
+  const gallerySubtitleText = actionMenu?.labels?.gallerySubtitle || 'Choose from gallery';
+  
   const cancelText = actionMenu?.labels?.cancel || 'Cancel';
-  const titleTextStr = actionMenu?.labels?.title || 'Select Image Source';
-  
+
   const sequence = actionMenu?.sequence || ['camera', 'gallery', 'cancel'];
 
   const renderButton = (type: 'camera' | 'gallery' | 'cancel') => {
-    let text = '';
-    let onPress = () => {};
+    let onPress = () => { };
 
     if (type === 'camera') {
-      text = cameraText;
       onPress = () => {
         onClose();
         if (actions?.onMediaAction) {
@@ -46,7 +53,6 @@ export const ActionPopup: React.FC<ActionPopupProps> = ({
         }
       };
     } else if (type === 'gallery') {
-      text = galleryText;
       onPress = () => {
         onClose();
         if (actions?.onMediaAction) {
@@ -54,27 +60,43 @@ export const ActionPopup: React.FC<ActionPopupProps> = ({
         }
       };
     } else if (type === 'cancel') {
-      text = cancelText;
       onPress = onClose;
     }
+
+    if (type === 'cancel') {
+      return (
+        <TouchableOpacity
+          key={type}
+          style={localStyles.cancelButton}
+          onPress={onPress}
+        >
+          <Text style={localStyles.cancelButtonText}>{cancelText}</Text>
+        </TouchableOpacity>
+      );
+    }
+
+    const isCamera = type === 'camera';
+    const title = isCamera ? cameraText : galleryText;
+    const subtitle = isCamera ? cameraSubtitleText : gallerySubtitleText;
+    const iconName = isCamera ? 'camera-outline' : 'image-outline';
+    const gradientColors = isCamera ? ['#3b82f6', '#2563eb'] : ['#8b5cf6', '#6d28d9'];
 
     return (
       <TouchableOpacity
         key={type}
-        style={[
-          localStyles.button,
-          { backgroundColor: type === 'cancel' ? '#E5E5EA' : primaryColor },
-        ]}
+        style={localStyles.actionButton}
         onPress={onPress}
       >
-        <Text
-          style={[
-            localStyles.buttonText,
-            { color: type === 'cancel' ? '#FF3B30' : textColor },
-          ]}
-        >
-          {text}
-        </Text>
+        <View style={localStyles.actionButtonLeft}>
+          <LinearGradient colors={gradientColors} style={localStyles.iconContainer}>
+            <Icon name={iconName} size={22} color="#fff" />
+          </LinearGradient>
+          <View style={localStyles.textContainer}>
+            <Text style={[localStyles.actionTitle, { color: textColor }]}>{title}</Text>
+            <Text style={localStyles.actionSubtitle}>{subtitle}</Text>
+          </View>
+        </View>
+        <Icon name="chevron-forward" size={20} color="rgba(255,255,255,0.5)" />
       </TouchableOpacity>
     );
   };
@@ -87,14 +109,24 @@ export const ActionPopup: React.FC<ActionPopupProps> = ({
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
-        <View style={localStyles.overlay}>
+        <View style={[localStyles.overlay, { backgroundColor: overlayColor }]}>
           <TouchableWithoutFeedback>
-            <View style={localStyles.bottomSheetContainer}>
-              <View style={localStyles.dragIndicator} />
-              
-              <Text style={[localStyles.titleText, { color: titleColorVal }]}>
-                {titleTextStr}
-              </Text>
+            <View style={[localStyles.bottomSheetContainer, { backgroundColor }]}>
+              <View style={localStyles.headerContainer}>
+                <View style={localStyles.dragIndicator} />
+                
+                <View style={localStyles.topIconContainer}>
+                   <Icon name="document-outline" size={24} color="#93c5fd" />
+                </View>
+
+                <Text style={[localStyles.titleText, { color: titleColorVal }]}>
+                  {titleTextStr}
+                </Text>
+                
+                <Text style={localStyles.subtitleText}>
+                  {subtitleTextStr}
+                </Text>
+              </View>
 
               {sequence.map((btnType) => renderButton(btnType))}
             </View>
@@ -108,46 +140,97 @@ export const ActionPopup: React.FC<ActionPopupProps> = ({
 const localStyles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
     justifyContent: 'flex-end',
   },
   bottomSheetContainer: {
     width: '100%',
-    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 36, // Extra padding for safe area
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 20,
+    paddingTop: 10,
+    paddingBottom: 24,
   },
   dragIndicator: {
-    width: 40,
-    height: 5,
-    backgroundColor: '#DDDDDD',
-    borderRadius: 3,
+    width: 36,
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 16,
   },
-  titleText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 20,
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
   },
-  button: {
-    paddingVertical: 16,
-    borderRadius: 14,
+  topIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: 'rgba(59, 130, 246, 0.15)',
+    justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.3)',
   },
-  buttonText: {
-    fontSize: 16,
+  titleText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  subtitleText: {
+    fontSize: 12,
+    color: '#94a3b8',
+    textAlign: 'center',
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    marginBottom: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+  },
+  actionButtonLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  textContainer: {
+    justifyContent: 'center',
+  },
+  actionTitle: {
+    fontSize: 15,
     fontWeight: '600',
+    marginBottom: 2,
+  },
+  actionSubtitle: {
+    fontSize: 11,
+    color: '#94a3b8',
+  },
+  cancelButton: {
+    paddingVertical: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    alignItems: 'center',
+    marginTop: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+  },
+  cancelButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#ef4444',
   },
 });
